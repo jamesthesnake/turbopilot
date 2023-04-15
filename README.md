@@ -3,7 +3,7 @@
 [![CMake](https://github.com/ravenscroftj/turbopilot/actions/workflows/cmake.yml/badge.svg)](https://github.com/ravenscroftj/turbopilot/actions/workflows/cmake.yml) [![Mastodon Follow](https://img.shields.io/mastodon/follow/000117012?domain=https%3A%2F%2Ffosstodon.org%2F&style=social)](https://fosstodon.org/@jamesravey) ![BSD Licensed](https://img.shields.io/github/license/ravenscroftj/turbopilot) ![Time Spent](https://img.shields.io/endpoint?url=https://wakapi.nopro.be/api/compat/shields/v1/jamesravey/all_time/project%3Aturbopilot)
 
 
-TurboPilot is a self-hosted [copilot](https://github.com/features/copilot) clone which uses the library behind [llama.cpp](https://github.com/comex/llama.cpp) to run the [6 Billion Parameter Salesforce Codegen model](https://github.com/salesforce/CodeGen) in 4GiB of RAM. It is heavily based and inspired by on the [fauxpilot](https://github.com/fauxpilot/fauxpilot) project.
+TurboPilot is a self-hosted [copilot](https://github.com/features/copilot) clone which uses the library behind [llama.cpp](https://github.com/ggerganov/llama.cpp) to run the [6 Billion Parameter Salesforce Codegen model](https://github.com/salesforce/CodeGen) in 4GiB of RAM. It is heavily based and inspired by on the [fauxpilot](https://github.com/fauxpilot/fauxpilot) project.
 
 ***NB: This is a proof of concept right now rather than a stable tool. Autocompletion is quite slow in this version of the project. Feel free to play with it, but your mileage may vary.***
 
@@ -26,7 +26,7 @@ You have 2 options for getting the model
 
 #### Option A: Direct Download - Easy, Quickstart
 
-You can download the pre-converted, pre-quantized models from [Google Drive](https://drive.google.com/drive/folders/1wFy1Y0pqoK23ZeMWWCp8evxWOJQVdaGh?usp=sharing). I've made the `multi` flavour models with 2B and 6B parameters available - these models are pre-trained on  `C`, `C++`, `Go`, `Java`, `JavaScript`, and `Python`
+You can download the pre-converted, pre-quantized models from [Google Drive](https://drive.google.com/drive/folders/1wFy1Y0pqoK23ZeMWWCp8evxWOJQVdaGh?usp=sharing). I've made the `multi` flavour models with 350M, 2B and 6B parameters available - these models are pre-trained on  `C`, `C++`, `Go`, `Java`, `JavaScript`, and `Python`
 
 #### Option B: Convert The Models Yourself - Hard, More Flexible
 
@@ -52,7 +52,7 @@ If you have a multi-core system you can control how many CPUs are used with the 
 
 ### 📦 Running From Docker
 
-You can also run Turbopilot from the pre-built docker image supplied [here](https://github.com/users/ravenscroftj/packages/container/package/turbopilot%2Fturbopilot)
+You can also run Turbopilot from the pre-built docker image supplied [here](https://github.com/users/ravenscroftj/packages/container/package/turbopilot)
 
 You will still need to download the models separately, then you can run:
 
@@ -62,7 +62,7 @@ docker run --rm -it \
   -e THREADS=6 \
   -e MODEL="/models/codegen-2B-multi-ggml-4bit-quant.bin" \
   -p 18080:18080 \
-  ghcr.io/ravenscroftj/turbopilot/turbopilot:latest
+  ghcr.io/ravenscroftj/turbopilot:latest
 ```
 
 ### 🌐 Using the API
@@ -132,12 +132,10 @@ Should get you something like this:
 
 Again I want to set expectations around this being a proof-of-concept project. With that in mind. Here are some current known limitations.
 
-As of **v0.0.1**:
+As of **v0.0.2**:
 - The models can be quite slow - especially the 6B ones. It can take ~30-40s to make suggestions across 4 CPU cores.
-- I've only tested the system on Ubuntu 22.04. Your mileage may vary on other operating systems. Please let me know if you try it elsewhere. I'm particularly interested in performance on Apple Silicon.
-- Sometimes suggestions get truncated in nonsensical places - e.g. part way through a variable name or string name. This is due to a hard limit on suggestion length.
-- Sometimes the server will run out of memory and crash. This is because it will try to use everything above your current location as context during generation. I'm working on a fix.
-
+- I've only tested the system on Ubuntu 22.04 but I am now supplying ARM docker images and soon I'll be providing ARM binary releases.
+- Sometimes suggestions get truncated in nonsensical places - e.g. part way through a variable name or string name. This is due to a hard limit of 2048 on the context length (prompt + suggestion).
 
 ## 👏 Acknowledgements
 
